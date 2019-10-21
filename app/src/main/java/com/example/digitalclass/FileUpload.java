@@ -49,11 +49,11 @@ public class FileUpload extends AppCompatActivity {
         ed7 = findViewById(R.id.editText7);
         db = FirebaseFirestore.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        intent = new Intent(this,MainActivity.class);
+        intent = new Intent(this, MainActivity.class);
     }
 
-    public void uploadFile(View view){
-        if (pdfUri != null){
+    public void uploadFile(View view) {
+        if (pdfUri != null) {
             //String fileName = System.currentTimeMillis()+"";
             progressDialog = new ProgressDialog(this);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -62,25 +62,19 @@ public class FileUpload extends AppCompatActivity {
             progressDialog.show();
 
             Uri file = pdfUri;
-            String fileName = System.currentTimeMillis()+"";
-            StorageReference riversRef = mStorageRef.child("images/"+fileName);
+            String fileName = System.currentTimeMillis() + "";
+            StorageReference riversRef = mStorageRef.child("pdf/" + fileName);
 
             riversRef.putFile(file)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            // Get a URL to the uploaded content
-                            String downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
-                            //Toast.makeText(FileUpload.this, downloadUrl, Toast.LENGTH_SHORT).show();
 
-                            //Adding URl to the storage
+                            String downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
 
                             Map<String, Object> fileURL1 = new HashMap<>();
                             fileURL1.put("url", downloadUrl);
-                            //fileURL1.put("code", ed7.getText().toString());
-                            //fileURL.put("born", 1815);
 
-                            // Add a new document with a generated ID
                             db.collection("filesURL")
                                     .document(ed7.getText().toString())
                                     .set(fileURL1)
@@ -113,51 +107,51 @@ public class FileUpload extends AppCompatActivity {
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            int currentProgress = (int)(100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                            int currentProgress = (int) (100 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
                             progressDialog.setProgress(currentProgress);
                         }
                     })
             ;
 
 
-        }else{
+        } else {
             Toast.makeText(this, "Please choose the file and then upload", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void chooseFile(View view){
-        if (ContextCompat.checkSelfPermission(FileUpload.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+    public void chooseFile(View view) {
+        if (ContextCompat.checkSelfPermission(FileUpload.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             selectPDF();
-        }else{
-            ActivityCompat.requestPermissions(FileUpload.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},9);
+        } else {
+            ActivityCompat.requestPermissions(FileUpload.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 9 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        if (requestCode == 9 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             selectPDF();
-        }else{
+        } else {
             Toast.makeText(this, "Read Permission should be granted inorder to upload File", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void selectPDF(){
+    private void selectPDF() {
         Intent intent = new Intent();
         intent.setType("application/pdf");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent,86);
+        startActivityForResult(intent, 86);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 86 && resultCode == RESULT_OK && data != null){
+        if (requestCode == 86 && resultCode == RESULT_OK && data != null) {
             pdfUri = data.getData();
             Toast.makeText(this, "File is choosen", Toast.LENGTH_SHORT).show();
             //25 Min
-        }else{
+        } else {
             Toast.makeText(this, "Please select a File", Toast.LENGTH_SHORT).show();
         }
     }
