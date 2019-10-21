@@ -9,4 +9,5 @@
     <string name="fullName">Enter Full Name</string>
     <string name="logIn">Log In</string>
     <string name="signIn">Sign In</string>
+    <string name="fileName">Enter unique code for your file</string>
 </resources>
