@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -69,29 +70,38 @@ public class FileUpload extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            String downloadUrl;
+                            Task<Uri> downloadUrl1 = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                            downloadUrl1.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    String downloadUrl = uri.toString();
+                                    Map<String, Object> fileURL1 = new HashMap<>();
+                                    fileURL1.put("url", downloadUrl);
 
-                            String downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+                                    db.collection("filesURL")
+                                            .document(ed7.getText().toString())
+                                            .set(fileURL1)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    progressDialog.hide();
+                                                    startActivity(intent);
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    //Log.w(TAG, "Error adding document", e);
+                                                    Toast.makeText(FileUpload.this, "Failed on storing file in database", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                }
+                            });
 
-                            Map<String, Object> fileURL1 = new HashMap<>();
-                            fileURL1.put("url", downloadUrl);
 
-                            db.collection("filesURL")
-                                    .document(ed7.getText().toString())
-                                    .set(fileURL1)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            progressDialog.hide();
-                                            startActivity(intent);
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            //Log.w(TAG, "Error adding document", e);
-                                            Toast.makeText(FileUpload.this, "Failed on storing file in database", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                            //Uri downloadUri = taskSnapshot.getDownload
+
 
 
                             //End of URL storing to the storage
