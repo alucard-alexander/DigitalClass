@@ -55,6 +55,7 @@ public class FileUpload extends AppCompatActivity {
 
     public void uploadFile(View view) {
         if (pdfUri != null) {
+            //HI there
             //String fileName = System.currentTimeMillis()+"";
             progressDialog = new ProgressDialog(this);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
