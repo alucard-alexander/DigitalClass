@@ -46,6 +46,7 @@ public class PDFReadings extends AppCompatActivity {
     }
 
     public void downloadFile(View view) throws IOException {
+        //Git working
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Downloading File...");
         progressDialog.show();
@@ -56,6 +57,8 @@ public class PDFReadings extends AppCompatActivity {
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
 
                         ////URLLLLLLL
+
+
 
                         download(PDFReadings.this,"test",".pdf",DIRECTORY_DOWNLOADS,"https://firebasestorage.googleapis.com/v0/b/digitalclass-4ca87.appspot.com/o/pdf%2F1571807064110?alt=media&token=ce0f337a-372c-447d-b301-86e52f8e716d");
 
