@@ -46,7 +46,7 @@ public class PDFReadings extends AppCompatActivity {
     }
 
     public void downloadFile(View view) throws IOException {
-        //Git working
+        //Git NOT  working
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Downloading File...");
         progressDialog.show();
