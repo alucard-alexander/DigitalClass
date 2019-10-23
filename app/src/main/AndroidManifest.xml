@@ -22,6 +22,7 @@
         <activity android:name=".FileUpload">
 
 
+
         </activity>
         <activity android:name=".RegistrationPage" />
         <activity android:name=".LoginPage"></activity>
