@@ -17,17 +17,22 @@
         android:theme="@style/AppTheme">
         <activity android:name=".test"></activity>
         <activity android:name=".PDFReadings">
+
+        </activity>
+        <activity android:name=".FileUpload">
+
+
+        </activity>
+        <activity android:name=".RegistrationPage" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FileUpload">
+        <activity android:name=".LoginPage" >
 
         </activity>
-        <activity android:name=".RegistrationPage" />
-        <activity android:name=".LoginPage" />
         <activity android:name=".MainActivity" />
     </application>
 

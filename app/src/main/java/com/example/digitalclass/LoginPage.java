@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,6 +21,7 @@ public class LoginPage extends AppCompatActivity {
     Intent homePage;
     private EditText email,pass;
     private ProgressDialog progressDialog;
+    private RadioButton teacher,student;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,10 @@ public class LoginPage extends AppCompatActivity {
         pass = findViewById(R.id.editText6);
         homePage = new Intent(this,MainActivity.class);
         progressDialog = new ProgressDialog(this);
+        teacher = findViewById(R.id.radioButton);
+        student = findViewById(R.id.radioButton2);
+
+
     }
 
     public void signUp(View view){
@@ -46,8 +52,13 @@ public class LoginPage extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.hide();
                         if (task.isSuccessful()){
+
+
+
                             Toast.makeText(LoginPage.this, "Successfully Registered", Toast.LENGTH_SHORT).show();
                             startActivity(homePage);
+
+
                         }else{
                             Toast.makeText(LoginPage.this, "Wrong Password or Email", Toast.LENGTH_SHORT).show();
                         }

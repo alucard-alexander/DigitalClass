@@ -12,6 +12,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -51,6 +55,36 @@ public class FileUpload extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         intent = new Intent(this, MainActivity.class);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.item2: {
+                Toast.makeText(this, "Already in the same page", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            case R.id.item3:{
+                Intent i = new Intent(this,PDFReadings.class);
+                startActivity(i);
+            }
+            case R.id.item4:{
+                FirebaseAuth mAuth= FirebaseAuth.getInstance();
+                mAuth.signOut();
+
+            }
+
+        }
+
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void uploadFile(View view) {

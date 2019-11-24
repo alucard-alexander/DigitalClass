@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -60,30 +61,50 @@ public class RegistrationPage extends AppCompatActivity {
                 });
     }
 
-    public void uploadData(String userID) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public void uploadData(final String userID) {
 
-        Map<String, Object> user1 = new HashMap<>();
-        user1.put("name", name.getText().toString());
-        user1.put("mobile", mobile.getText().toString());
-
-
-        db.collection("person").document(userID).set(user1)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+        FirebaseAuth mAuth= FirebaseAuth.getInstance();
+        mAuth.signInWithEmailAndPassword(email.getText().toString(), pass.getText().toString())
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()){
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                        Toast.makeText(RegistrationPage.this, "SuccessFully Registered", Toast.LENGTH_SHORT).show();
-                        progressDialog.hide();
-                        startActivity(loginPage);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(RegistrationPage.this, e.toString(), Toast.LENGTH_SHORT).show();
+                            Map<String, Object> user1 = new HashMap<>();
+                            user1.put("name", name.getText().toString());
+                            user1.put("mobile", mobile.getText().toString());
+                            RadioButton teacher,student;
+                            teacher = findViewById(R.id.radioButton);
+                            student = findViewById(R.id.radioButton2);
+                            if (teacher.isChecked()){
+                                user1.put("type","teacher");
+                            }else if (student.isChecked()){
+                                user1.put("type","student");
+                            }
+
+
+                            db.collection("person").document(userID).set(user1)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+
+                                            Toast.makeText(RegistrationPage.this, "SuccessFully Registered", Toast.LENGTH_SHORT).show();
+                                            progressDialog.hide();
+                                            startActivity(loginPage);
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(RegistrationPage.this, e.toString(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
+                        }
                     }
                 });
+
 
 
 
