@@ -29,6 +29,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:16.0.4'
 
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+    implementation 'com.github.kk121:File-Loader:1.2'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
@@ -36,10 +37,11 @@ dependencies {
 
     //PDf dependencies
 
+    implementation 'com.itextpdf:itext7-core:7.1.8'
 
     //fab dependencies
     implementation 'com.google.android.material:material:1.0.0'
-    implementation 'com.itextpdf:itextg:5.5.10'
+
 
 
 }

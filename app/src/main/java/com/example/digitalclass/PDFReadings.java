@@ -34,20 +34,31 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.parser.PdfTextExtractor;
+
+import com.itextpdf.kernel.pdf.PdfReader;
+
+import com.krishna.fileloader.FileLoader;
+import com.krishna.fileloader.listener.FileRequestListener;
+import com.krishna.fileloader.pojo.FileResponse;
+import com.krishna.fileloader.request.FileLoadRequest;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Scanner;
 
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
@@ -59,6 +70,8 @@ public class PDFReadings extends AppCompatActivity {
     private EditText editText;
     private PDFView pdfView;
 
+    private InputStream inputStream = null;
+
     private static final int  MEGABYTE = 1024 * 1024;
 
     private Boolean playing;
@@ -67,8 +80,8 @@ public class PDFReadings extends AppCompatActivity {
 
 
     private TextToSpeech textToSpeech;
-    private TextView textView;
-    private Intent intent;
+
+    private String line = null;
 
 
     @Override
@@ -85,7 +98,15 @@ public class PDFReadings extends AppCompatActivity {
         textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                textToSpeech.setLanguage(Locale.US);
+                if (status == TextToSpeech.SUCCESS){
+                    textToSpeech.setLanguage(Locale.US);
+                    Toast.makeText(PDFReadings.this, "OK", Toast.LENGTH_SHORT).show();
+                    //say
+                }else{
+                    Toast.makeText(PDFReadings.this, "Error Occured", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         });
 
@@ -98,19 +119,82 @@ public class PDFReadings extends AppCompatActivity {
 
     public void fabClick(View view){
         if (!playing){
-            Toast.makeText(this, "play", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "play", Toast.LENGTH_SHORT).show();
 
             try {
-
+                //PdfReader reader = new PdfReader("");
                 //PdfReader reader = new PdfReader(Uri.parse("https://firebasestorage.googleapis.com/v0/b/digitalclass-4ca87.appspot.com/o/pdf%2F1574359822709?alt=media&token=2ac31c56-589e-46c3-bc86-10ea3a6b9fb9"));
                 /*int n = reader.getNumberOfPages();
                 for (int i = 0; i < n;i++){
                     String s = PdfTextExtractor.getTextFromPage(reader,i).trim();
-                    textToSpeech.speak(s,TextToSpeech.QUEUE_FLUSH,null,null);
+
                     break;
                 }*/
 
-                Toast.makeText(this, pdfView.getCurrentPage(), Toast.LENGTH_SHORT).show();
+                //FileLoa
+
+                textToSpeech.speak("Dilip Kumar M",TextToSpeech.QUEUE_FLUSH,null,null);
+
+                FileLoader.with(this)
+                        .load("https://firebasestorage.googleapis.com/v0/b/digitalclass-4ca87.appspot.com/o/pdf%2F1574359822709?alt=media&token=2ac31c56-589e-46c3-bc86-10ea3a6b9fb9")
+                        .asFile(new FileRequestListener<File>() {
+                            @Override
+                            public void onLoad(FileLoadRequest request, FileResponse<File> response) {
+                                File file = response.getBody();
+                                try {
+                                    PdfReader reader123 = new PdfReader(file);
+                                    //String textExtractorString = PdfTextExtractor.getTextFromPage(reader123,1).trim();
+                                    //String text123 = PdfTextExtractor.getTextFromPage(1);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onError(FileLoadRequest request, Throwable t) {
+
+                            }
+                        });
+
+                /*FileLoader.with(this)
+                        .load("https://firebasestorage.googleapis.com/v0/b/digitalclass-4ca87.appspot.com/o/pdf%2F1574359822709?alt=media&token=2ac31c56-589e-46c3-bc86-10ea3a6b9fb9")
+                        .fromDirectory("test4",FileLoader.DIR_EXTERNAL_PUBLIC)
+                        .asFile(new FileRequestListener<File>() {
+                            @Override
+                            public void onLoad(FileLoadRequest request, FileResponse<File> response) {
+                                File loadFile = response.getBody();
+                                /*String str123= loadFile.;
+                                Toast.makeText(PDFReadings.this, str123, Toast.LENGTH_SHORT).show();*/
+
+                                /*StringBuffer text = new StringBuffer();
+
+                                try {
+                                    BufferedReader br = new BufferedReader(new FileReader(loadFile));
+                                    String line;
+                                    while((line = br.readLine()) != null){
+                                            //textToSpeech.speak(line,TextToSpeech.QUEUE_FLUSH,null,null);
+                                        Toast.makeText(PDFReadings.this, line, Toast.LENGTH_SHORT).show();
+                                        text.append(line);
+                                        text.append("\n");
+                                    }
+                                    br.close();
+                                    Toast.makeText(PDFReadings.this, "Double OK", Toast.LENGTH_SHORT).show();
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+
+                            @Override
+                            public void onError(FileLoadRequest request, Throwable t) {
+
+                            }
+                        });*/
+
+                //textToSpeech.speak(convertStreamToString(inputStream),TextToSpeech.QUEUE_FLUSH,null,null);
+
+                //Toast.makeText(this, pdfView.getCurrentPage(), Toast.LENGTH_SHORT).show();
                 //Log.d("errrr", pdfView.conte);
 
 
@@ -173,48 +257,7 @@ public class PDFReadings extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Downloading File...");
         progressDialog.show();
-        /*File localFile = File.createTempFile("file", "pdf");
-        mStorageRef.getFile(localFile)
-                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
 
-                        ////URLLLLLLL
-
-
-                        download(PDFReadings.this, "test", ".pdf", DIRECTORY_DOWNLOADS, url123);
-
-
-                        ///////enddd
-
-
-                        progressDialog.hide();
-                        Toast.makeText(PDFReadings.this, "Successfully downloaded", Toast.LENGTH_SHORT).show();
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle failed download
-                // ...
-            }
-        });*/
-
-        /*storageReference = firebaseStorage.getReference();
-        ref = storageReference.child("mobile.pdf");
-
-        ref.getDownloadUrl()
-                .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        download(PDFReadings.this,"mobile",".pdf",DIRECTORY_DOWNLOADS,"https://firebasestorage.googleapis.com/v0/b/digitalclass-4ca87.appspot.com/o/pdf%2F1571803919606?alt=media&token=9178190d-9a8d-46e7-8be3-92f308787d45");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });*/
 
     }
 
@@ -245,7 +288,7 @@ public class PDFReadings extends AppCompatActivity {
 
         @Override
         protected InputStream doInBackground(String... strings) {
-            InputStream inputStream = null;
+
             try {
                 URL uri = new URL(strings[0]);
                 HttpURLConnection urlConnection = (HttpURLConnection) uri.openConnection();
@@ -262,7 +305,10 @@ public class PDFReadings extends AppCompatActivity {
         protected void onPostExecute(InputStream inputStream) {
             super.onPostExecute(inputStream);
             pdfView.fromStream(inputStream).load();
+            //text = convertStreamToString(inputStream);
         }
     }
+
+
 
 }
