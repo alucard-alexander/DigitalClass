@@ -88,6 +88,10 @@ public class PDFReadings extends AppCompatActivity {
     private String fileName,urlVar;
 
 
+
+    private List<String> data = new ArrayList<String>();
+
+
     private TextToSpeech textToSpeech;
 
 
@@ -152,11 +156,13 @@ public class PDFReadings extends AppCompatActivity {
 
 
             } else {
+                textToSpeech.stop();
                 Toast.makeText(this, "pause", Toast.LENGTH_SHORT).show();
                 playing = false;
             }
         }else{
             Toast.makeText(this, "Please choose the file", Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -191,12 +197,38 @@ public class PDFReadings extends AppCompatActivity {
                 try {
                     PdfReader pdfReader = new PdfReader(Environment.getExternalStoragePublicDirectory(
                             Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+"/DigiClass/test.pdf");
-                    progressDialog.hide();
 
-                    String std = PdfTextExtractor.getTextFromPage(pdfReader,1).trim();
+                    int pageCount = pdfReader.getNumberOfPages();
+                    Log.d("countingggg", String.valueOf(pageCount));
+                    /*String strdd = null;
+                    strdd = PdfTextExtractor.getTextFromPage(pdfReader,1);*/
+
+                    for (int i = 1;i<=pageCount;i++){
+                        //strdd = PdfTextExtractor.getTextFromPage(pdfReader,i);
+                        data.add(PdfTextExtractor.getTextFromPage(pdfReader,i));
+                        //break;
+                    }
+                    //Log.d("data", data.get(0));
+                    //Toast.makeText(ctxt, "", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(ctxt, pageCount, Toast.LENGTH_SHORT).show();
+                    /*for (int i = 0;i<pageCount;i++){
+                        data[i] = PdfTextExtractor.getTextFromPage(pdfReader,i).trim();
+                    }*/
+
+                    for (int i = 0;i<pageCount;i++){
+                        if (i == 0){
+                            textToSpeech.speak(data.get(i),TextToSpeech.QUEUE_FLUSH,null,null);
+                            //break;
+                        }else {
+                            textToSpeech.speak(data.get(i),TextToSpeech.QUEUE_ADD,null,null);
+                        }
+
+                    }
+
+                    progressDialog.hide();
                     //Toast.makeText(this, std, Toast.LENGTH_SHORT).show();
-                    Log.d("dataaa", std);
-                } catch (IOException e) {
+
+                } catch (Exception e) {
                     e.printStackTrace();
                     //Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     Log.d("errrrr", e.getMessage());
@@ -223,7 +255,10 @@ public class PDFReadings extends AppCompatActivity {
                 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 //startDownload();
-            startDownloading("https://firebasestorage.googleapis.com/v0/b/digitalclass-4ca87.appspot.com/o/pdf%2F1574359822709?alt=media&token=2ac31c56-589e-46c3-bc86-10ea3a6b9fb9");
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("In order to play audio, file needs to be get downloaded");
+            progressDialog.show();
+            startDownloading(urlVar);
         }
 
 
@@ -255,7 +290,7 @@ public class PDFReadings extends AppCompatActivity {
                         new RetrivePdfStream().execute(urlVar);
                         //download(PDFReadings.this, "test", ".pdf", DIRECTORY_DOWNLOADS, );
 
-                        Toast.makeText(PDFReadings.this, "SuccessFully downloaded", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(PDFReadings.this, "SuccessFully downloaded", Toast.LENGTH_SHORT).show();
                     } else {
                         //Log.d(TAG, "No such document");
                         Toast.makeText(PDFReadings.this, "Enter Valid file code", Toast.LENGTH_SHORT).show();
@@ -270,7 +305,7 @@ public class PDFReadings extends AppCompatActivity {
         });
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Downloading File...");
+        progressDialog.setTitle("Fetching File...");
         progressDialog.show();
 
 
