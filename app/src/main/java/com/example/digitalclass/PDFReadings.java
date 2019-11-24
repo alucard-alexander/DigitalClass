@@ -87,6 +87,8 @@ public class PDFReadings extends AppCompatActivity {
 
     private String fileName,urlVar;
 
+    private PdfReader pdfReader;
+
 
 
     private List<String> data = new ArrayList<String>();
@@ -132,26 +134,31 @@ public class PDFReadings extends AppCompatActivity {
     public void fabClick(View view){
         if (urlVar != null) {
             if (!playing) {
-                try {
-                    textToSpeech.speak("Dilip Kumar M", TextToSpeech.QUEUE_FLUSH, null, null);
-                    if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                        String[] permission = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                        requestPermissions(permission, ConstantsVariables.PERMISSION_STORAGE_CODE);
+                EditText ed = findViewById(R.id.editText8);
+                if (fileName != ed.getText().toString()) {
 
-                    } else {
-                        progressDialog = new ProgressDialog(this);
-                        progressDialog.setTitle("In order to play audio, file needs to be get downloaded");
-                        progressDialog.show();
-                        startDownloading(urlVar);
+                    try {
+                        textToSpeech.speak("Dilip Kumar M", TextToSpeech.QUEUE_FLUSH, null, null);
+                        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                            String[] permission = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                            requestPermissions(permission, ConstantsVariables.PERMISSION_STORAGE_CODE);
+
+                        } else {
+                            progressDialog = new ProgressDialog(this);
+                            progressDialog.setTitle("In order to play audio, file needs to be get downloaded");
+                            progressDialog.show();
+                            startDownloading(urlVar);
+                        }
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d("errrr", e.getMessage());
                     }
+                }else{
 
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    Log.d("errrr", e.getMessage());
                 }
-
                 playing = true;
 
 
@@ -195,7 +202,7 @@ public class PDFReadings extends AppCompatActivity {
                 // your code
 
                 try {
-                    PdfReader pdfReader = new PdfReader(Environment.getExternalStoragePublicDirectory(
+                    pdfReader = new PdfReader(Environment.getExternalStoragePublicDirectory(
                             Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+"/DigiClass/test.pdf");
 
                     int pageCount = pdfReader.getNumberOfPages();
