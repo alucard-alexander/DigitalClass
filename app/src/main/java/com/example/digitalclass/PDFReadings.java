@@ -82,22 +82,18 @@ public class PDFReadings extends AppCompatActivity {
     private InputStream inputStream = null;
 
 
-
     private Boolean playing;
 
 
-
-    private String fileName,urlVar;
+    private String fileName, urlVar;
 
     private PdfReader pdfReader;
-
 
 
     private List<String> data = new ArrayList<String>();
 
 
     private TextToSpeech textToSpeech;
-
 
 
     @Override
@@ -114,11 +110,11 @@ public class PDFReadings extends AppCompatActivity {
         textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS){
+                if (status == TextToSpeech.SUCCESS) {
                     textToSpeech.setLanguage(Locale.US);
                     Toast.makeText(PDFReadings.this, "OK", Toast.LENGTH_SHORT).show();
                     //say
-                }else{
+                } else {
                     Toast.makeText(PDFReadings.this, "Error Occured", Toast.LENGTH_SHORT).show();
                 }
 
@@ -131,8 +127,7 @@ public class PDFReadings extends AppCompatActivity {
     }
 
 
-
-    public void fabClick(View view){
+    public void fabClick(View view) {
         if (urlVar != null) {
             if (!playing) {
                 EditText ed = findViewById(R.id.editText8);
@@ -157,7 +152,7 @@ public class PDFReadings extends AppCompatActivity {
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         Log.d("errrr", e.getMessage());
                     }
-                }else{
+                } else {
 
                 }
                 playing = true;
@@ -168,21 +163,19 @@ public class PDFReadings extends AppCompatActivity {
                 Toast.makeText(this, "pause", Toast.LENGTH_SHORT).show();
                 playing = false;
             }
-        }else{
+        } else {
             Toast.makeText(this, "Please choose the file", Toast.LENGTH_SHORT).show();
 
         }
     }
 
-    public void startDownloading(String url){
+    public void startDownloading(String url) {
 
         File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+"/DigiClass","test.pdf");
-        if (file.exists()){
+                Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/DigiClass", "test.pdf");
+        if (file.exists()) {
             file.delete();
         }
-
-
 
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
@@ -191,29 +184,28 @@ public class PDFReadings extends AppCompatActivity {
         request.setDescription("Downloading File... to play audio");
         request.allowScanningByMediaScanner();
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(DIRECTORY_DOWNLOADS,"DigiClass/test.pdf");
+        request.setDestinationInExternalPublicDir(DIRECTORY_DOWNLOADS, "DigiClass/test.pdf");
 
-        DownloadManager manager = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(request);
 
 
-
-        BroadcastReceiver onComplete=new BroadcastReceiver() {
+        BroadcastReceiver onComplete = new BroadcastReceiver() {
             public void onReceive(Context ctxt, Intent intent) {
                 // your code
 
                 try {
                     pdfReader = new PdfReader(Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+"/DigiClass/test.pdf");
+                            Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/DigiClass/test.pdf");
 
                     int pageCount = pdfReader.getNumberOfPages();
                     Log.d("countingggg", String.valueOf(pageCount));
                     /*String strdd = null;
                     strdd = PdfTextExtractor.getTextFromPage(pdfReader,1);*/
 
-                    for (int i = 1;i<=pageCount;i++){
+                    for (int i = 1; i <= pageCount; i++) {
                         //strdd = PdfTextExtractor.getTextFromPage(pdfReader,i);
-                        data.add(PdfTextExtractor.getTextFromPage(pdfReader,i));
+                        data.add(PdfTextExtractor.getTextFromPage(pdfReader, i));
                         //break;
                     }
                     //Log.d("data", data.get(0));
@@ -223,12 +215,12 @@ public class PDFReadings extends AppCompatActivity {
                         data[i] = PdfTextExtractor.getTextFromPage(pdfReader,i).trim();
                     }*/
 
-                    for (int i = 0;i<pageCount;i++){
-                        if (i == 0){
-                            textToSpeech.speak(data.get(i),TextToSpeech.QUEUE_FLUSH,null,null);
+                    for (int i = 0; i < pageCount; i++) {
+                        if (i == 0) {
+                            textToSpeech.speak(data.get(i), TextToSpeech.QUEUE_FLUSH, null, null);
                             //break;
-                        }else {
-                            textToSpeech.speak(data.get(i),TextToSpeech.QUEUE_ADD,null,null);
+                        } else {
+                            textToSpeech.speak(data.get(i), TextToSpeech.QUEUE_ADD, null, null);
                         }
 
                     }
@@ -248,7 +240,7 @@ public class PDFReadings extends AppCompatActivity {
         registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         //Toast.makeText(this, Environment.getExternalStoragePublicDirectory(
-         //       Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+"/DigiClass/test.pdf", Toast.LENGTH_SHORT).show();
+        //       Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+"/DigiClass/test.pdf", Toast.LENGTH_SHORT).show();
         //registerReceiver(manager, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         //manager.getUriForDownloadedFile();
 
@@ -262,13 +254,12 @@ public class PDFReadings extends AppCompatActivity {
         if (requestCode == ConstantsVariables.PERMISSION_STORAGE_CODE
                 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                //startDownload();
+            //startDownload();
             progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("In order to play audio, file needs to be get downloaded");
             progressDialog.show();
             startDownloading(urlVar);
         }
-
 
 
     }
@@ -320,8 +311,6 @@ public class PDFReadings extends AppCompatActivity {
     }
 
 
-
-
     class RetrivePdfStream extends AsyncTask<String, Void, InputStream> {
 
         @Override
@@ -346,7 +335,6 @@ public class PDFReadings extends AppCompatActivity {
             //text = convertStreamToString(inputStream);
         }
     }
-
 
 
 }
