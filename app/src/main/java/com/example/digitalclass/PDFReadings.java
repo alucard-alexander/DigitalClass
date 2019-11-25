@@ -95,29 +95,33 @@ public class PDFReadings extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pdfreadings);
+        try {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_pdfreadings);
 
-        mStorageRef = FirebaseStorage.getInstance().getReference();
+            mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        editText = findViewById(R.id.editText8);
+            editText = findViewById(R.id.editText8);
 
-        db = FirebaseFirestore.getInstance();
+            db = FirebaseFirestore.getInstance();
 
-        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status == TextToSpeech.SUCCESS) {
-                    textToSpeech.setLanguage(Locale.US);
-                    Toast.makeText(PDFReadings.this, "OK", Toast.LENGTH_SHORT).show();
-                    //say
-                } else {
-                    Toast.makeText(PDFReadings.this, "Error Occured", Toast.LENGTH_SHORT).show();
+            textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if (status == TextToSpeech.SUCCESS) {
+                        textToSpeech.setLanguage(Locale.US);
+                        Toast.makeText(PDFReadings.this, "OK", Toast.LENGTH_SHORT).show();
+                        //say
+                    } else {
+                        Toast.makeText(PDFReadings.this, "Error Occured", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 }
-
-
-            }
-        });
+            });
+        }catch (Exception e){
+            Log.d("herererer", e.getMessage());
+        }
 
         playing = false;
 
@@ -134,12 +138,14 @@ public class PDFReadings extends AppCompatActivity {
             case R.id.item3:{
                 Intent i = new Intent(this,PDFReadings.class);
                 startActivity(i);
+                return true;
             }
             case R.id.item4:{
                 FirebaseAuth mAuth= FirebaseAuth.getInstance();
                 mAuth.signOut();
                 Intent i = new Intent(this,LoginPage.class);
                 startActivity(i);
+                return true;
 
             }
 
@@ -151,46 +157,50 @@ public class PDFReadings extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();;
+        try {
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("person")
-                .document(mAuth.getUid())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()){
-                            //Toast.makeText(LoginPage.this, "Successful", Toast.LENGTH_SHORT).show();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("person")
+                    .document(mAuth.getUid())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                //Toast.makeText(LoginPage.this, "Successful", Toast.LENGTH_SHORT).show();
 
-                            DocumentSnapshot document = task.getResult();
-                            try {
-                                if (document.exists()) {
-                                    Log.d("dataaaaa", "DocumentSnapshot data: " + document.getString("type"));
-                                    //Toast.makeText(LoginPage.this, document.getString("type"), Toast.LENGTH_SHORT).show();
-                                    if (document.getString("type").equals("teacher")) {
-                                        MenuInflater inflater = getMenuInflater();
-                                        inflater.inflate(R.menu.menu, menu);
+                                DocumentSnapshot document = task.getResult();
+                                try {
+                                    if (document.exists()) {
+                                        Log.d("dataaaaa", "DocumentSnapshot data: " + document.getString("type"));
+                                        //Toast.makeText(LoginPage.this, document.getString("type"), Toast.LENGTH_SHORT).show();
+                                        if (document.getString("type").equals("teacher")) {
+                                            MenuInflater inflater = getMenuInflater();
+                                            inflater.inflate(R.menu.menu, menu);
 
+                                        }
+                                        if (document.getString("type").equals("student")) {
+
+                                            MenuInflater inflater = getMenuInflater();
+                                            inflater.inflate(R.menu.childmenu, menu);
+                                        }
+
+                                    } else {
+                                        Log.d("dattaaa", "Couldn't get data");
                                     }
-                                    if (document.getString("type").equals("student")) {
-                                    /*homePage = new Intent(LoginPage.this,PDFReadings.class);
-                                    startActivity(homePage);*/
-                                        MenuInflater inflater = getMenuInflater();
-                                        inflater.inflate(R.menu.childmenu, menu);
-                                    }
-
-                                } else {
-                                    Log.d("dattaaa", "Couldn't get data");
+                                } catch (Exception e) {
+                                    Toast.makeText(PDFReadings.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Log.d("errrrroooooorrrrrr", e.getMessage());
                                 }
-                            }catch (Exception e){
-                                Toast.makeText(PDFReadings.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                Log.d("errrrroooooorrrrrr", e.getMessage());
-                            }
 
+                            }
                         }
-                    }
-                });
+                    });
+
+        }catch (Exception e){
+            Log.d("errrrherere", e.getMessage());
+        }
 
         return true;
 

@@ -72,15 +72,16 @@ public class FileUpload extends AppCompatActivity {
                 return true;
             }
             case R.id.item3:{
-                Intent i = new Intent(this,PDFReadings.class);
+                Intent i = new Intent( this,PDFReadings.class);
                 startActivity(i);
+                return true;
             }
             case R.id.item4:{
                 FirebaseAuth mAuth= FirebaseAuth.getInstance();
                 mAuth.signOut();
                 Intent i = new Intent(this,LoginPage.class);
                 startActivity(i);
-
+                return true;
             }
 
         }
