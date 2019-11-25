@@ -24,7 +24,6 @@ public class LoginPage extends AppCompatActivity {
     Intent homePage;
     private EditText email,pass;
     private ProgressDialog progressDialog;
-    private RadioButton teacher,student;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +34,6 @@ public class LoginPage extends AppCompatActivity {
         pass = findViewById(R.id.editText6);
         //homePage = new Intent(this,MainActivity.class);
         progressDialog = new ProgressDialog(this);
-        teacher = findViewById(R.id.radioButton);
-        student = findViewById(R.id.radioButton2);
 
 
     }
@@ -85,16 +82,6 @@ public class LoginPage extends AppCompatActivity {
                                                     }
 
                                                 }
-                                                /*DocumentSnapshot document = task.getResult();
-                                                String uid = document.getString("type");
-                                                Toast.makeText(LoginPage.this, uid, Toast.LENGTH_SHORT).show();
-                                                if (uid.equals("student")) {
-                                                    homePage = new Intent(getApplicationContext(), PDFReadings.class);
-                                                }
-                                                if (uid.equals("teacher")) {
-                                                    homePage = new Intent(getApplicationContext(), FileUpload.class);
-                                                }*/
-
                                             }
                                         });
                             }catch (Exception e){

@@ -22,6 +22,7 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -34,6 +35,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -52,22 +54,17 @@ import com.krishna.fileloader.pojo.FileResponse;
 import com.krishna.fileloader.request.FileLoadRequest;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
+
 
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
@@ -126,6 +123,80 @@ public class PDFReadings extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.item2: {
+                Toast.makeText(this, "Already in the same page", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            case R.id.item3:{
+                Intent i = new Intent(this,PDFReadings.class);
+                startActivity(i);
+            }
+            case R.id.item4:{
+                FirebaseAuth mAuth= FirebaseAuth.getInstance();
+                mAuth.signOut();
+                Intent i = new Intent(this,LoginPage.class);
+                startActivity(i);
+
+            }
+
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("person")
+                .document(mAuth.getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            //Toast.makeText(LoginPage.this, "Successful", Toast.LENGTH_SHORT).show();
+
+                            DocumentSnapshot document = task.getResult();
+                            try {
+                                if (document.exists()) {
+                                    Log.d("dataaaaa", "DocumentSnapshot data: " + document.getString("type"));
+                                    //Toast.makeText(LoginPage.this, document.getString("type"), Toast.LENGTH_SHORT).show();
+                                    if (document.getString("type").equals("teacher")) {
+                                        MenuInflater inflater = getMenuInflater();
+                                        inflater.inflate(R.menu.menu, menu);
+
+                                    }
+                                    if (document.getString("type").equals("student")) {
+                                    /*homePage = new Intent(LoginPage.this,PDFReadings.class);
+                                    startActivity(homePage);*/
+                                        MenuInflater inflater = getMenuInflater();
+                                        inflater.inflate(R.menu.childmenu, menu);
+                                    }
+
+                                } else {
+                                    Log.d("dattaaa", "Couldn't get data");
+                                }
+                            }catch (Exception e){
+                                Toast.makeText(PDFReadings.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Log.d("errrrroooooorrrrrr", e.getMessage());
+                            }
+
+                        }
+                    }
+                });
+
+        return true;
+
+
+
+    }
 
     public void fabClick(View view) {
         if (urlVar != null) {

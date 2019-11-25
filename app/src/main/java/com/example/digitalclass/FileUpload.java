@@ -78,6 +78,8 @@ public class FileUpload extends AppCompatActivity {
             case R.id.item4:{
                 FirebaseAuth mAuth= FirebaseAuth.getInstance();
                 mAuth.signOut();
+                Intent i = new Intent(this,LoginPage.class);
+                startActivity(i);
 
             }
 
