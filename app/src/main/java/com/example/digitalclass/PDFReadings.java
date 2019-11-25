@@ -134,7 +134,7 @@ public class PDFReadings extends AppCompatActivity {
                 if (fileName != ed.getText().toString()) {
 
                     try {
-                        textToSpeech.speak("Dilip Kumar M", TextToSpeech.QUEUE_FLUSH, null, null);
+                        textToSpeech.speak("Starting Text to Speech", TextToSpeech.QUEUE_FLUSH, null, null);
                         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
                             String[] permission = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
                             requestPermissions(permission, ConstantsVariables.PERMISSION_STORAGE_CODE);
