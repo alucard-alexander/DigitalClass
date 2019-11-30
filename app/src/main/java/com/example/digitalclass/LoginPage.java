@@ -44,7 +44,7 @@ public class LoginPage extends AppCompatActivity {
     }
 
     public void logInUser(View view){
-        progressDialog.setMessage("Signing Innnnn");
+        progressDialog.setMessage("Signing In........");
         progressDialog.show();
         mAuth.signInWithEmailAndPassword(email.getText().toString(), pass.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

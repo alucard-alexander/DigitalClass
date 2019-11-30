@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,7 +40,7 @@ public class FileUpload extends AppCompatActivity {
 
     private Uri pdfUri = null;
     private FirebaseStorage storage;
-    private EditText ed7;
+    private EditText ed7, fileName, fileDescription;
     private FirebaseFirestore db;
     private StorageReference mStorageRef;
     private Intent intent;
@@ -54,32 +55,34 @@ public class FileUpload extends AppCompatActivity {
         ed7 = findViewById(R.id.editText7);
         db = FirebaseFirestore.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        intent = new Intent(this, MainActivity.class);
+        intent = new Intent(this, FileUpload.class);
+        fileName = findViewById(R.id.editText10);
+        fileDescription = findViewById(R.id.editText11);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu,menu);
+        inflater.inflate(R.menu.menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.item2: {
                 Toast.makeText(this, "Already in the same page", Toast.LENGTH_SHORT).show();
                 return true;
             }
-            case R.id.item3:{
-                Intent i = new Intent( this,PDFReadings.class);
+            case R.id.item3: {
+                Intent i = new Intent(this, PDFReadings.class);
                 startActivity(i);
                 return true;
             }
-            case R.id.item4:{
-                FirebaseAuth mAuth= FirebaseAuth.getInstance();
+            case R.id.item4: {
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
                 mAuth.signOut();
-                Intent i = new Intent(this,LoginPage.class);
+                Intent i = new Intent(this, LoginPage.class);
                 startActivity(i);
                 return true;
             }
@@ -91,6 +94,21 @@ public class FileUpload extends AppCompatActivity {
     }
 
     public void uploadFile(View view) {
+        final String fileName1 = fileName.getText().toString();
+        final String fileDescriptor = fileDescription.getText().toString();
+        String uniqueCode = ed7.getText().toString();
+        if (fileName1.equals("")) {
+            Toast.makeText(this, "Please Enter the file name", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (fileDescriptor.equals("")) {
+            Toast.makeText(this, "Please Enter the file Descriptor", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (uniqueCode.equals("")) {
+            Toast.makeText(this, "Please Enter the file unique Code", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
         if (pdfUri != null) {
             //HI there
             //String fileName = System.currentTimeMillis()+"";
@@ -116,6 +134,8 @@ public class FileUpload extends AppCompatActivity {
                                     String downloadUrl = uri.toString();
                                     Map<String, Object> fileURL1 = new HashMap<>();
                                     fileURL1.put("url", downloadUrl);
+                                    fileURL1.put("name",fileName1);
+                                    fileURL1.put("description",fileDescriptor);
 
                                     db.collection("filesURL")
                                             .document(ed7.getText().toString())
@@ -139,7 +159,6 @@ public class FileUpload extends AppCompatActivity {
 
 
                             //Uri downloadUri = taskSnapshot.getDownload
-
 
 
                             //End of URL storing to the storage

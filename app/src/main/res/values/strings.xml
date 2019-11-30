@@ -11,4 +11,7 @@
     <string name="signIn">Sign In</string>
     <string name="fileName">Enter unique code for your file</string>
     <string name="fileCode">Enter unque code</string>
+    <string name="fileNameNotUnique">Enter File name</string>
+    <string name="fileDescription">Enter File Details</string>
+
 </resources>
