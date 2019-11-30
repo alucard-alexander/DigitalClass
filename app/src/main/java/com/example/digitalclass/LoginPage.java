@@ -18,6 +18,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.Map;
 
 public class LoginPage extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -34,6 +37,40 @@ public class LoginPage extends AppCompatActivity {
         pass = findViewById(R.id.editText6);
         //homePage = new Intent(this,MainActivity.class);
         progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Checking login credential");
+        progressDialog.show();
+        if (mAuth.getUid() != null){
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("person")
+                    .document(mAuth.getUid())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()){
+                                //Map<String,String> map = task.getResult();
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()){
+                                    progressDialog.hide();
+                                    if (document.getString("type").equals("teacher")){
+                                        Intent i = new Intent(LoginPage.this,FileUpload.class);
+                                        startActivity(i);
+                                    }else if (document.getString("type").equals("student")){
+                                        Intent i = new Intent(LoginPage.this,PDFReadings.class);
+                                        startActivity(i);
+                                    }
+                                }
+                            }else {
+                               // Log.w(TAG, "Error getting documents.", task.getException());
+                                Toast.makeText(LoginPage.this, "Error Occured", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+        }else{
+            progressDialog.hide();
+        }
+
 
 
     }

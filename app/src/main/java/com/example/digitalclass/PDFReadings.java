@@ -132,12 +132,14 @@ public class PDFReadings extends AppCompatActivity {
 
         switch (item.getItemId()){
             case R.id.item2: {
-                Toast.makeText(this, "Already in the same page", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(this,FileUpload.class);
+                startActivity(i);
                 return true;
             }
             case R.id.item3:{
-                Intent i = new Intent(this,PDFReadings.class);
-                startActivity(i);
+                /*Intent i = new Intent(this,PDFReadings.class);
+                startActivity(i);*/
+                Toast.makeText(this, "Already in the same page so chill", Toast.LENGTH_SHORT).show();
                 return true;
             }
             case R.id.item4:{
@@ -147,6 +149,11 @@ public class PDFReadings extends AppCompatActivity {
                 startActivity(i);
                 return true;
 
+            }
+            case R.id.item5:{
+                Intent i = new Intent(this,MainActivity.class);
+                startActivity(i);
+                return true;
             }
 
         }

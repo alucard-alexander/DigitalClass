@@ -24,6 +24,16 @@
             android:gravity="center"
             android:textAlignment="center">
 
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:fontFamily="cursive"
+                android:text="Upload your File Here"
+                android:textAlignment="center"
+                android:textSize="30sp" />
+
             <Button
                 android:id="@+id/button5"
                 android:layout_width="match_parent"

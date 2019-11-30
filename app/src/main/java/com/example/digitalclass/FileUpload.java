@@ -45,6 +45,7 @@ public class FileUpload extends AppCompatActivity {
     private StorageReference mStorageRef;
     private Intent intent;
     private ProgressDialog progressDialog;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
 
     @Override
@@ -55,7 +56,7 @@ public class FileUpload extends AppCompatActivity {
         ed7 = findViewById(R.id.editText7);
         db = FirebaseFirestore.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        intent = new Intent(this, FileUpload.class);
+        intent = new Intent(this, MainActivity.class);
         fileName = findViewById(R.id.editText10);
         fileDescription = findViewById(R.id.editText11);
     }
@@ -80,16 +81,18 @@ public class FileUpload extends AppCompatActivity {
                 return true;
             }
             case R.id.item4: {
-                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
                 mAuth.signOut();
                 Intent i = new Intent(this, LoginPage.class);
                 startActivity(i);
                 return true;
             }
-
+            case R.id.item5:{
+                Intent i = new Intent(this,MainActivity.class);
+                startActivity(i);
+                return true;
+            }
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -134,8 +137,9 @@ public class FileUpload extends AppCompatActivity {
                                     String downloadUrl = uri.toString();
                                     Map<String, Object> fileURL1 = new HashMap<>();
                                     fileURL1.put("url", downloadUrl);
-                                    fileURL1.put("name",fileName1);
-                                    fileURL1.put("description",fileDescriptor);
+                                    fileURL1.put("name", fileName1);
+                                    fileURL1.put("description", fileDescriptor);
+                                    fileURL1.put("id", mAuth.getUid());
 
                                     db.collection("filesURL")
                                             .document(ed7.getText().toString())
