@@ -143,4 +143,9 @@ public class LoginPage extends AppCompatActivity {
                 });
 
     }
+
+    public void forgotPassword(View view) {
+        Intent i = new Intent(this,forgotPassword.class);
+        startActivity(i);
+    }
 }

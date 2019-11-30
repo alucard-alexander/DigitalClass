@@ -120,7 +120,7 @@ public class RegistrationPage extends AppCompatActivity {
                             uploadData(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(RegistrationPage.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegistrationPage.this, "Email already exists.", Toast.LENGTH_SHORT).show();
                             progressDialog.hide();
                         }
                     }
