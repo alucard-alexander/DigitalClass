@@ -360,7 +360,7 @@ public class PDFReadings extends AppCompatActivity {
             return;
         }
 
-        final DocumentReference docRef = db.collection("filesURL").document(fileName);
+        final DocumentReference docRef = db.collection("filesURL").document(fileName.toLowerCase());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -383,11 +383,12 @@ public class PDFReadings extends AppCompatActivity {
                         Toast.makeText(PDFReadings.this, "Enter Valid file code", Toast.LENGTH_SHORT).show();
 
                     }
-                    progressDialog.hide();
+
                 } else {
                     //Log.d(TAG, "get failed with ", task.getException());
-                    Toast.makeText(PDFReadings.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PDFReadings.this, "Enter Valid file code", Toast.LENGTH_SHORT).show();
                 }
+                progressDialog.hide();
             }
         });
 

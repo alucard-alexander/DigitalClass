@@ -99,7 +99,7 @@ public class FileUpload extends AppCompatActivity {
     public void uploadFile(View view) {
         final String fileName1 = fileName.getText().toString();
         final String fileDescriptor = fileDescription.getText().toString();
-        String uniqueCode = ed7.getText().toString();
+        String uniqueCode = ed7.getText().toString().toLowerCase();
         if (fileName1.equals("")) {
             Toast.makeText(this, "Please Enter the file name", Toast.LENGTH_SHORT).show();
             return;

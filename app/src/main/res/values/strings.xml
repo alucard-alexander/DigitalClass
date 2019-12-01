@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Digital Class</string>
+    <string name="app_name">DigiClass</string>
     <string name="regUserName">Enter the User Name</string>
     <string name="regPass">Enter the Password</string>
     <string name="regRePass">Retype the Password</string>

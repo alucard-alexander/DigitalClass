@@ -81,6 +81,16 @@ public class LoginPage extends AppCompatActivity {
     }
 
     public void logInUser(View view){
+        if (email.getText().toString().isEmpty()){
+            Toast.makeText(this, "Please enter email address", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else if (pass.getText().toString().isEmpty()){
+            Toast.makeText(this, "Please enter Password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
         progressDialog.setMessage("Signing In........");
         progressDialog.show();
         mAuth.signInWithEmailAndPassword(email.getText().toString(), pass.getText().toString())

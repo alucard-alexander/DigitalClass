@@ -3,6 +3,7 @@ package com.example.digitalclass;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -27,8 +28,9 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
-    ArrayAdapter <String> adapter;
-    List<String> list;
+    private ArrayAdapter <String> adapter;
+    private List<String> list;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -38,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
         listView = findViewById(R.id.listView);
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading Your file details.....");
+        progressDialog.show();
         list = new ArrayList<>();
         adapter = new ArrayAdapter<String>(this,R.layout.pdf_list,R.id.pdfInfo,list);
         db.collection("filesURL")
@@ -50,12 +55,15 @@ public class MainActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 //Log.d(TAG, document.getId() + " => " + document.getData());
                                 //PdfContents pdfContents = new PdfContents(document.getString("name"),document.getString("description"),document.getString("url"));
-                                list.add("File name: "+document.getString("name")+"\nFile Description: "+document.getString("description")+"\nURL: "+document.getString("url"));
+                                list.add("File name: "+document.getString("name")+"\nFile Description: "+document.getString("description") +"\nFile code: "+document.getId());
                             }
                             listView.setAdapter(adapter);
+
                         }else{
                             Toast.makeText(MainActivity.this, "An error occured", Toast.LENGTH_SHORT).show();
+
                         }
+                        progressDialog.hide();
                     }
                 });
     }
