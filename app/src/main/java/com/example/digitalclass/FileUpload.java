@@ -155,7 +155,7 @@ public class FileUpload extends AppCompatActivity {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     //Log.w(TAG, "Error adding document", e);
-                                                    Toast.makeText(FileUpload.this, "Failed on storing file in database", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(FileUpload.this, "Uniqye code already exists", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                 }
