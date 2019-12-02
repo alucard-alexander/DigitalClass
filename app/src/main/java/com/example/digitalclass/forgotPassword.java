@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.SignInMethodQueryResult;
@@ -56,7 +57,18 @@ public class forgotPassword extends AppCompatActivity {
                                                 }
 
                                             }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                progressDialog.hide();
+                                                Toast.makeText(forgotPassword.this, "Email does not exists", Toast.LENGTH_SHORT).show();
+
+                                            }
                                         });
+                            }else{
+                                progressDialog.hide();
+                                Toast.makeText(forgotPassword.this, "EMail Does not exists", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
